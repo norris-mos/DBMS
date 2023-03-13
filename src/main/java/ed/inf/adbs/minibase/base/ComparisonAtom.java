@@ -26,6 +26,18 @@ public class ComparisonAtom extends Atom {
         return op;
     }
 
+    public String getTerm1String() {
+        return term1.toString();
+    }
+
+    public String getTerm2String() {
+        return term2.toString();
+    }
+
+    public String getOpString() {
+        return op.toString();
+    }
+
     @Override
     public String toString() {
         return term1 + " " + op + " " + term2;

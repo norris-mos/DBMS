@@ -21,6 +21,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigInteger;
 
 /**
@@ -41,8 +47,12 @@ public class CQMinimizer {
         String outputFile = args[1];
 
         // minimizeCQ(inputFile, outputFile);
+        DataCatalog dataCatalog = DataCatalog.getInstance();
+        dataCatalog.initialize();
+        String path = dataCatalog.getDatabaseSchema("S");
+        System.out.println(path);
 
-        minimizeCQ2(inputFile, outputFile);
+        // minimizeCQ2(inputFile, outputFile);
     }
     // iterate through the body, remove atoms, check if homomorphism, remove
     // if there is homomorphism.
@@ -55,34 +65,6 @@ public class CQMinimizer {
      * // *
      * //
      */
-
-    public static void minimizeCQ(String inputFile, String outputFile) {
-        try {
-            Query query = QueryParser.parse(Paths.get(inputFile));
-            Head qhead = query.getHead();
-            List<Atom> queryAtoms = query.getBody(); // get the atoms in the query
-            List<Atom> minimalQueryAtoms = new ArrayList<>(queryAtoms); // make a copy of the query atoms
-            for (Atom atom : queryAtoms) {
-                List<Atom> atomless = new ArrayList<>(minimalQueryAtoms);
-                atomless.remove(atom); // remove the current atom from the minimal set of atoms
-                Query q1 = new Query(qhead, minimalQueryAtoms);
-                Query q2 = new Query(qhead, atomless);
-                if (existsHomomorphism(q1, q2)) {
-                    // if a homomorphism exists, the current atom can be removed from the query
-                    queryAtoms.remove(atom);
-                    System.out.println("True");
-                } else {
-                    // if no homomorphism exists, keep the current atom in the query
-                    minimalQueryAtoms.add(atom);
-                }
-                Query min = new Query(qhead, queryAtoms);
-                System.out.println("Entire query: " + min);
-            }
-        } catch (Exception e) {
-            System.err.println("Exception occurred during parsing");
-            e.printStackTrace();
-        }
-    }
 
     public static void minimizeCQ2(String inputFile, String outputFile) {
         try {
@@ -109,8 +91,8 @@ public class CQMinimizer {
                     // if no homomorphism exists, keep the current atom in the query
                     continue;
                 }
-
             }
+
             Query min = new Query(qhead, minimalQueryAtoms);
             System.out.println("full query: " + query);
             System.out.println("minimized: " + min);
@@ -118,148 +100,122 @@ public class CQMinimizer {
             System.err.println("Exception occurred during parsing");
             e.printStackTrace();
         }
-
     }
 
-    // public static Reducedq queryvars(Head head, List<Atom> querybody) {
-    // List<Term> mapterm = querybody.stream()
-    // .map(atom -> ((RelationalAtom) atom).getTerms())
-    // .flatMap(List::stream)
-    // .collect(Collectors.toList());
-
-    // System.out.println("const_list: " + map);
-    // List<Term> var_terms = new ArrayList<>();
-    // List<Term> const_terms = new ArrayList<>();
-    // List<Variable> head_vars = head.getVariables();
-
-    // for (Term term : mapterm) {
-    // if (term instanceof Variable) {
-    // String varName = ((Variable) term).getName();
-    // if (!head_vars.stream().anyMatch(v -> v.getName().equals(varName))
-    // && !var_terms.contains(term)) {
-    // var_terms.add(term);
-    // } else if (!const_terms.contains(term)) {
-    // const_terms.add(term);
-    // }
-    // } else if (!const_terms.contains(term)) {
-    // const_terms.add(term);
-    // }
-    // }
-
-    // List<Term> const_list = const_terms.stream()
-    // .distinct()
-    // .collect(Collectors.toList());
-
-    // List<Term> var_list = var_terms.stream()
-    // .distinct()
-    // .collect(Collectors.toList());
-
-    // System.out.println("const_list: " + const_list);
-    // System.out.println("var_list: " + var_list);
-
-    // return new Reducedq(head, querybody, const_list, var_list);
-    // }
-
-    // // the minimized query contains only the atoms that are necessary for a
-    // homomorphism to exist
-    // Query minimizedQuery = new Query(query.getHead(), queryAtoms);
-
-    // to check for homomorphisms you need to map all variables to
-    // public static existsHomomorphism(Reducedq q1, Reducedq q2){
-
-    // }
     public static Reducedq queryvars(Head head, List<Atom> querybody) {
-
+        // Extract all terms from querybody
         List<Term> mapterm = querybody.stream()
                 .map(atom -> ((RelationalAtom) atom).getTerms())
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
+        // Initialize lists for variables, constants, head variables, integer constants,
+        // and string constants
         List<Term> var_terms = new ArrayList<>();
         List<Term> const_terms = new ArrayList<>();
         List<Variable> head_vars = head.getVariables();
         List<Term> head_variables = new ArrayList<>(head_vars);
-
         List<Term> const_int_terms = new ArrayList<>();
         List<Term> const_s_terms = new ArrayList<>();
 
+        // Iterate through all terms extracted from querybody
         for (int i = 0; i < mapterm.size(); i++) {
+            // If the term is a variable
             if (mapterm.get(i) instanceof Variable) {
+                // Get the variable name
                 String varName = ((Variable) mapterm.get(i)).getName();
+                // If the variable is not in head variables and has not been added to var_terms
+                // yet
                 if (!head_vars.stream().anyMatch(v -> v.getName().equals(varName))
                         && !var_terms.contains(mapterm.get(i))) {
+                    // Add variable to var_terms list
                     var_terms.add(mapterm.get(i));
                 }
 
+                // If the term is an integer constant
             } else if (mapterm.get(i) instanceof IntegerConstant) {
+                // Get the integer constant value
                 Integer const_val = ((IntegerConstant) mapterm.get(i)).getValue();
+                // If the integer constant value is not in const_int_terms list
                 if (!const_int_terms.stream().anyMatch(c -> ((IntegerConstant) c).getValue().equals(const_val))) {
+                    // Add integer constant to const_int_terms list
                     const_int_terms.add(mapterm.get(i));
 
-                }
-
-            } else if (mapterm.get(i) instanceof StringConstant) {
-                String const_s_val = ((StringConstant) mapterm.get(i)).getValue();
-                if (!const_s_terms.stream().anyMatch(c -> ((StringConstant) c).getValue().equals(const_s_val))) {
-                    const_s_terms.add(mapterm.get(i));
-
+                    // If the term is a string constant
+                } else if (mapterm.get(i) instanceof StringConstant) {
+                    // Get the string constant value
+                    String const_s_val = ((StringConstant) mapterm.get(i)).getValue();
+                    // If the string constant value is not in const_s_terms list
+                    if (!const_s_terms.stream().anyMatch(c -> ((StringConstant) c).getValue().equals(const_s_val))) {
+                        // Add string constant to const_s_terms list
+                        const_s_terms.add(mapterm.get(i));
+                    }
                 }
             }
-
         }
 
+        // Combine integer and string constant terms, as well as head variables, into
+        // const_list
         List<Term> const_list = new ArrayList<>(const_int_terms);
         const_list.addAll(const_s_terms);
         const_list.addAll(head_variables);
 
-        // Set<Term> var_terms_set = new HashSet<>(var_terms);
-        // List<Term> var_list = new ArrayList<>();
-        // var_list.addAll(var_terms_set);
-
-        // System.out.println("const_terms_set: " + const_list);
-        // System.out.println("var_terms_set: " + var_list);
-
-        // return the result of the method
+        // Return a new Reducedq object with the given head, query body, const_list, and
+        // var_terms
         return new Reducedq(head, querybody, const_list, var_terms);
     }
 
-    public static Map<Term, Term> findSubstitution(List<Term> atomvars, List<Term> atommap,
-            Set<Map<Term, Term>> existingSubstitutions) {
-        Random random = new Random();
-        Map<Term, Term> substitution = new HashMap<>();
-        for (Term var : atomvars) {
-            substitution.put(var, atommap.get(random.nextInt(atommap.size())));
-        }
-        if (existingSubstitutions.contains(substitution)) {
+    /**
+     * Generates a new substitution for the given variable and term lists, avoiding
+     * previously existing substitutions
+     * 
+     * @param atomvars              the list of variables in the atom
+     * @param atommap               the list of terms that the variables can be
+     *                              mapped to
+     * @param existingSubstitutions the set of substitutions that have already been
+     *                              used
+     * @return a new substitution map
+     */
 
-            return findSubstitution(atomvars, atommap, existingSubstitutions);
-        } else {
-
-            existingSubstitutions.add(substitution);
-            // System.err.println(substitution);
-
-            return substitution;
-        }
-    }
-
+    /**
+     * Generates a list of all possible mappings between variables in a list and
+     * terms in another list.
+     * 
+     * @param atomvars the list of variables to be mapped
+     * @param atommap  the list of terms that the variables can be mapped to
+     * @return a list of all possible mappings as hash maps
+     */
     public static List<HashMap<Term, Term>> generateMappings(List<Term> atomvars, List<Term> atommap) {
         List<HashMap<Term, Term>> mappings = new ArrayList<HashMap<Term, Term>>();
 
+        // base case: if there are no variables to be mapped, return an empty list of
+        // mappings
         if (atomvars.size() == 0) {
             return mappings;
         }
 
+        // for each term in the map list, create a mapping for the first variable in the
+        // variable list
         for (int i = 0; i < atommap.size(); i++) {
             Term var1 = atommap.get(i);
 
+            // if there is only one variable, create a mapping and add it to the list of
+            // mappings
             if (atomvars.size() == 1) {
                 HashMap<Term, Term> mapping = new HashMap<Term, Term>();
                 mapping.put(atomvars.get(0), var1);
                 mappings.add(mapping);
-            } else {
+            }
+            // if there are more than one variable, recursively generate sub-mappings for
+            // the remaining variables
+            else {
                 List<Term> remainingVars = atomvars.subList(1, atomvars.size());
                 List<HashMap<Term, Term>> subMappings = generateMappings(remainingVars, atommap);
 
+                // for each sub-mapping, create a mapping that maps the first variable to the
+                // current term,
+                // and merge it with the sub-mapping to create a complete mapping for all
+                // variables
                 for (int j = 0; j < subMappings.size(); j++) {
                     HashMap<Term, Term> subMapping = subMappings.get(j);
                     HashMap<Term, Term> mapping = new HashMap<Term, Term>();
@@ -300,8 +256,8 @@ public class CQMinimizer {
                         .collect(Collectors.toList());
 
                 return new RelationalAtom(((RelationalAtom) atom).getName(), substitutedTerms);
-            })
-                    .collect(Collectors.toList());
+            }).collect(Collectors.toList());
+
             List<RelationalAtom> uniqueAtomsList = new ArrayList<>();
             Set<String> atomNames = new HashSet<>();
             for (RelationalAtom atom : substitutedQuery) {
@@ -327,7 +283,8 @@ public class CQMinimizer {
 
             System.out.println("unique atoms " + uniqueAtomsList);
             // found [R(w, 5, z), R(w, 5, z), R(x, 5, u)] and [R(x, 5, u), R(w, 5, z)]
-            Set<String> q2body = q2.getBody().stream().map(bod -> bod.toString()).collect(Collectors.toSet());
+            Set<String> q2body = q2.getBody().stream().map(bod -> bod.toString())
+                    .collect(Collectors.toSet());
             isSame = atomNames.equals(q2body);
 
             if (isSame) {
@@ -338,26 +295,6 @@ public class CQMinimizer {
 
         return homomorphismFound;
     }
-
-    public static void parsingExample2(String filename) {
-
-        try {
-            Query query = QueryParser.parse(Paths.get(filename));
-            // Query query = QueryParser.parse("Q(x, y) :- R(x, z), S(y, z, w)");
-            // Query query = QueryParser.parse("Q(x) :- R(x, 'z'), S(4, z, w)");
-
-            System.out.println("Entire query: " + query);
-            Head head = query.getHead();
-            System.out.println("Head: " + head);
-            Reducedq rq = queryvars(head, query.getBody());
-
-        } catch (Exception e) {
-            System.err.println("Exception occurred during parsing");
-            e.printStackTrace();
-        }
-    }
-
-    // }
 
     public static void parsingExample(String filename) {
 
@@ -392,23 +329,6 @@ public class CQMinimizer {
             List<Term> const_int_terms = new ArrayList<>();
             List<Term> const_s_terms = new ArrayList<>();
             List<Variable> head_vars = head.getVariables();
-            // for (int i = 0; i < mapterm.size(); i++) {
-
-            // if (mapterm.get(i) instanceof Variable) {
-            // String varName = ((Variable) mapterm.get(i)).getName();
-            // System.out.println("Head name: " + varName);
-
-            // if (!head_vars.stream().anyMatch(v -> v.getName().equals(varName))
-            // && !var_terms.contains(mapterm.get(i))) {
-            // var_terms.add(mapterm.get(i));
-            // } else if (!const_terms.contains(mapterm.get(i))) {
-            // const_terms.add(mapterm.get(i));
-            // }
-
-            // } else if (!const_terms.contains(mapterm.get(i))) {
-            // const_terms.add(mapterm.get(i));
-            // }
-            // }
 
             for (int i = 0; i < mapterm.size(); i++) {
                 if (mapterm.get(i) instanceof Variable) {
@@ -438,36 +358,12 @@ public class CQMinimizer {
             mapspace.addAll(const_s_terms);
             mapspace.addAll(var_terms);
 
-            // Set<Term> var_terms_set = new HashSet<>(var_terms);
-            // System.out.println("var_terms_set: " + var_terms);
-            // System.out.println("const_terms_set: " + const_terms_set);
-            // System.out.println("const_int_terms_set: " + const_int_terms);
-            // System.out.println("const_s_terms_set: " + const_s_terms);
-            // System.out.println("combined: " + mapspace);
-            // List<Term> combinedlist = new ArrayList<>(var_terms);
-            // combinedlist.addAll(const_terms);
-            // System.out.println("combinedlist: " + combinedlist);
-            // Set<Term> uni = combinedlist.steam().map(term -> ())
-
             Reducedq rq = queryvars(head, body);
             System.out.println("Head name: " + rq.getHead());
             System.out.println("Body name: " + rq.getBody());
             System.out.println("Vars name: " + rq.getVars());
             System.out.println("Const name: " + rq.getConst());
             System.out.println("mapspace name: " + rq.getMapspace());
-
-            // RelationalAtom term1 = (RelationalAtom) body.get(0);
-
-            // List<Term> terms1 = term1.getTerms();
-            // System.out.println("term 1: " + terms1);
-            // Atom term2 = body.get(1);
-            // System.out.println("term 2: " + term2);
-
-            // for (int i = 0; i < body.size(); i++) {
-            // List<Atom> slice = body.subList(0, i+1);
-            // System.out.println("sublist: " + slice);
-
-            // }
 
         } catch (Exception e) {
             System.err.println("Exception occurred during parsing");
