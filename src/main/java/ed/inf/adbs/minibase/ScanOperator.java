@@ -4,11 +4,13 @@ import ed.inf.adbs.minibase.base.OperatorException;
 import ed.inf.adbs.minibase.base.RelationalAtom;
 import ed.inf.adbs.minibase.base.Term;
 import ed.inf.adbs.minibase.base.Tuple;
+import ed.inf.adbs.minibase.base.Variable;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScanOperator extends Operator {
@@ -18,11 +20,24 @@ public class ScanOperator extends Operator {
     private String currentLine;
     private List<Term> terms;
 
-    public ScanOperator(RelationalAtom Relation) {
+    private List<Integer> index;
+
+    public ScanOperator(RelationalAtom Relation) throws Exception {
         this.RelationName = Relation.getName();
         this.RelationSchema = DataCatalog.getInstance().getDatabaseSchema(RelationName);
         this.terms = Relation.getTerms();
 
+        // Check that all terms are of the type variable else add to index
+        this.index = new ArrayList<>();
+
+        for (Term term : terms) {
+
+            if (!(term instanceof Variable)) {
+
+                index.add(terms.indexOf(term));
+
+            }
+        }
     }
 
     public List<Term> getChildTerms() {
@@ -42,12 +57,31 @@ public class ScanOperator extends Operator {
     @Override
     public Tuple getNextTuple() throws Exception {
         try {
-            currentLine = reader.readLine();
-            if (currentLine == null) {
-                return null;
+            while (true) {
+                currentLine = reader.readLine();
+                if (currentLine == null) {
+                    return null;
+                }
+
+                String[] fields = currentLine.split(",");
+                if (index.isEmpty()) {
+                    return new Tuple(currentLine, RelationSchema);
+                } else {
+                    boolean check = true;
+                    for (int i : index) {
+                        String constantcheck = fields[i];
+                        Term constinq = terms.get(i);
+                        String constinqstring = constinq.toString();
+                        if (!fields[i].equals(constinqstring)) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check) {
+                        return new Tuple(currentLine, RelationSchema);
+                    }
+                }
             }
-            String[] fields = currentLine.split(",");
-            return new Tuple(currentLine, RelationSchema);
         } catch (IOException e) {
             throw new OperatorException(
                     "Could not read from data source: " + DataCatalog.getInstance().getFilePath(RelationName));

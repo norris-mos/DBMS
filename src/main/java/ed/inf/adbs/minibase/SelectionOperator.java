@@ -62,7 +62,8 @@ public class SelectionOperator extends Operator {
             case "=":
 
                 return value1.equals(value2);
-
+            case "!=":
+                return !value1.equals(value2);
             case ">":
                 return Double.parseDouble(value1) > Double.parseDouble(value2);
             case "<":
