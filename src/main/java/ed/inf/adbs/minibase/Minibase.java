@@ -4,6 +4,7 @@ import ed.inf.adbs.minibase.base.Atom;
 import ed.inf.adbs.minibase.base.ComparisonAtom;
 import ed.inf.adbs.minibase.base.Query;
 import ed.inf.adbs.minibase.base.RelationalAtom;
+import ed.inf.adbs.minibase.base.Term;
 import ed.inf.adbs.minibase.base.Tuple;
 import ed.inf.adbs.minibase.base.Head;
 import ed.inf.adbs.minibase.parser.QueryParser;
@@ -46,15 +47,15 @@ public class Minibase {
      * from the query and prints them to screen.
      */
 
-    public static List<String> comparisonExtractor(String filename) {
+    public static List<ComparisonAtom> comparisonExtractor(String filename) {
         try {
             Query query = QueryParser.parse(Paths.get(filename));
 
             List<Atom> body = query.getBody();
 
-            List<String> catoms = body.stream()
+            List<ComparisonAtom> catoms = body.stream()
                     .filter(atom -> atom instanceof ComparisonAtom)
-                    .map(atom -> ((ComparisonAtom) atom).toString())
+                    .map(atom -> ((ComparisonAtom) atom))
                     .collect(Collectors.toList());
 
             System.out.println("Comparison atoms: " + catoms);
@@ -81,13 +82,24 @@ public class Minibase {
 
             List<Atom> body = query.getBody();
             System.out.println("Body: " + body);
-            List<String> compatoms = comparisonExtractor(filename);
+
+            List<ComparisonAtom> catoms = query.getComparisonAtoms();
+            List<RelationalAtom> ratoms = query.getRelationalAtoms();
+            System.out.println("catoms: " + catoms);
+            System.out.println("ratoms: " + ratoms);
 
             ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
-            child1.open();
+            // child1.open();
+            // child1.dump(System.out);
 
-            SelectionOperator selecta = new SelectionOperator(child1, 1, compatoms.get(0).toSring(),
-                    ((String) compatoms.get(0).term2));
+            SelectionOperator selecta = new SelectionOperator(child1, catoms);
+            selecta.open();
+            selecta.dump(System.out);
+            // System.out.println("tuple results" + selecta.getNextTuple());
+            // System.out.println("tuple results" + selecta.getNextTuple());
+            // System.out.println("tuple results" + selecta.getNextTuple());
+            // compatoms.get(0).toSring(),
+            // ((String) compatoms.get(0).term2));
 
         } catch (Exception e) {
             System.err.println("Exception occurred during parsing");

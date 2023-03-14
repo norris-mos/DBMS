@@ -1,18 +1,21 @@
 package ed.inf.adbs.minibase;
 
+import java.util.List;
+
+import ed.inf.adbs.minibase.base.ComparisonAtom;
+import ed.inf.adbs.minibase.base.Term;
 import ed.inf.adbs.minibase.base.Tuple;
 
 public class SelectionOperator extends Operator {
     private Operator child;
-    private int columnIndex;
-    private String comparisonOperator;
-    private String value;
+    private List<ComparisonAtom> ComparisonAtoms;
+    private List<Term> childschema;
 
-    public SelectionOperator(Operator child, int columnIndex, String comparisonOperator, String value) {
+    public SelectionOperator(Operator child, List<ComparisonAtom> ComparisonAtoms) {
         this.child = child;
-        this.columnIndex = columnIndex;
-        this.comparisonOperator = comparisonOperator;
-        this.value = value;
+        this.ComparisonAtoms = ComparisonAtoms;
+        // these are the variables in the query of relation being handled
+        this.childschema = ((ScanOperator) child).getChildTerms();
     }
 
     @Override
@@ -24,9 +27,25 @@ public class SelectionOperator extends Operator {
     public Tuple getNextTuple() throws Exception {
         Tuple tuple;
         while ((tuple = child.getNextTuple()) != null) {
+
+            boolean match = true;
             String[] fields = tuple.getFields();
-            String columnValue = fields[columnIndex];
-            if (compareValues(columnValue, comparisonOperator, value)) {
+
+            for (ComparisonAtom ComparisonAtom : ComparisonAtoms) {
+                Term comparisonVar = ComparisonAtom.getTerm1();
+
+                int comparisonIndex = childschema.indexOf(comparisonVar);
+                String columnValue = fields[comparisonIndex].trim();
+                String selectionTerm = ComparisonAtom.getTerm2String().trim();
+
+                if (!compareValues(columnValue, ComparisonAtom.getOpString(),
+                        selectionTerm)) {
+                    match = false;
+
+                    break;
+                }
+            }
+            if (match) {
                 return tuple;
             }
         }
@@ -41,9 +60,9 @@ public class SelectionOperator extends Operator {
     private boolean compareValues(String value1, String comparisonOperator, String value2) {
         switch (comparisonOperator) {
             case "=":
+
                 return value1.equals(value2);
-            case "!=":
-                return !value1.equals(value2);
+
             case ">":
                 return Double.parseDouble(value1) > Double.parseDouble(value2);
             case "<":
@@ -53,7 +72,9 @@ public class SelectionOperator extends Operator {
             case "<=":
                 return Double.parseDouble(value1) <= Double.parseDouble(value2);
             default:
-                throw new IllegalArgumentException("Invalid comparison operator: " + comparisonOperator);
+                // handle the default case by returning false
+                return false;
         }
     }
+
 }
