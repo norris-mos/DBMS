@@ -5,8 +5,10 @@
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/Minibase.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/Operator.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/ScanOperator.java
+/Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/ProjectionOperator.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/generated/MinibaseVisitor.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Reducedq.java
+/Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/QueryPlan.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/CQMinimizer.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/generated/MinibaseListener.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Atom.java
@@ -14,6 +16,7 @@
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/generated/MinibaseBaseVisitor.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/QueryParser.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/generated/MinibaseBaseListener.java
+/Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/QueryInterpreter.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Query.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/DataCatalog.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/SubMap.java

@@ -1,34 +1,60 @@
 package ed.inf.adbs.minibase;
 
-public class ProjectionOperator implements Operator {
-    private Operator childOperator;
-    private List<String> projectionList;
+import java.util.ArrayList;
+import java.util.List;
 
-    public ProjectionOperator(Operator childOperator, List<String> projectionList) {
+import ed.inf.adbs.minibase.base.OperatorException;
+import ed.inf.adbs.minibase.base.Term;
+import ed.inf.adbs.minibase.base.Tuple;
+import ed.inf.adbs.minibase.base.Variable;
+
+public class ProjectionOperator extends Operator {
+    private Operator childOperator;
+    private List<Variable> projectionList;
+
+    public ProjectionOperator(Operator childOperator, List<Variable> projectionList) {
         this.childOperator = childOperator;
         this.projectionList = projectionList;
     }
 
     @Override
     public void open() throws OperatorException {
-        childOperator.open();
+        try {
+            childOperator.open();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public Tuple getNextTuple() throws OperatorException {
+    public Tuple getNextTuple() throws Exception {
         Tuple tuple = childOperator.getNextTuple();
         if (tuple == null) {
             return null;
         }
-        List<String> projectedFields = new ArrayList<>();
-        for (String fieldName : projectionList) {
-            projectedFields.add(tuple.getField(fieldName));
+        StringBuilder projectedFields = new StringBuilder();
+        List<Term> newFields = new ArrayList<>();
+
+        for (Variable fieldName : projectionList) {
+            // just get correct fields from string tuple
+            List<Term> relationField = tuple.getTermfield();
+            int tupleIndex = relationField.indexOf(fieldName);
+            Term term = fieldName;
+            newFields.add(term);
+
+            projectedFields.append(tuple.getFields()[tupleIndex]);
         }
-        return new Tuple(projectedFields.toArray(new String[0]));
+        return new Tuple(projectedFields.toString(), tuple.getSchema(), newFields);
     }
 
     @Override
     public void close() throws OperatorException {
-        childOperator.close();
+        try {
+            childOperator.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

@@ -24,6 +24,7 @@ ed/inf/adbs/minibase/parser/generated/MinibaseParser$SumaggContext.class
 ed/inf/adbs/minibase/base/RelationalAtom.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$BodyContext.class
 ed/inf/adbs/minibase/base/Query.class
+ed/inf/adbs/minibase/ProjectionOperator.class
 ed/inf/adbs/minibase/parser/QueryParser$AtomVisitor.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$AtomContext.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$HeadContext.class
@@ -31,6 +32,7 @@ ed/inf/adbs/minibase/Minibase.class
 ed/inf/adbs/minibase/base/Attribute.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$TermContext.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$CmpOpContext.class
+ed/inf/adbs/minibase/QueryInterpreter.class
 ed/inf/adbs/minibase/base/OperatorException.class
 ed/inf/adbs/minibase/base/SubMap.class
 ed/inf/adbs/minibase/base/Head.class

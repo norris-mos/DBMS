@@ -9,6 +9,7 @@ import ed.inf.adbs.minibase.base.Tuple;
 import ed.inf.adbs.minibase.base.Head;
 import ed.inf.adbs.minibase.parser.QueryParser;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class Minibase {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         if (args.length != 3) {
             System.err.println("Usage: Minibase database_dir input_file output_file");
@@ -37,8 +38,12 @@ public class Minibase {
 
     }
 
-    public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) {
+    public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) throws IOException {
         // TODO: add your implementation
+        Query query = QueryParser.parse(Paths.get(inputFile));
+        String sql = QueryInterpreter.toSql((query));
+        System.out.println(sql);
+
     }
 
     /**
@@ -89,12 +94,12 @@ public class Minibase {
             System.out.println("ratoms: " + ratoms);
 
             ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
-            // child1.open();
-            // child1.dump(System.out);
+            child1.open();
+            child1.dump(System.out);
 
-            SelectionOperator selecta = new SelectionOperator(child1, catoms);
-            selecta.open();
-            selecta.dump(System.out);
+            // SelectionOperator selecta = new SelectionOperator(child1, catoms);
+            // selecta.open();
+            // selecta.dump(System.out);
             // System.out.println("tuple results" + selecta.getNextTuple());
             // System.out.println("tuple results" + selecta.getNextTuple());
             // System.out.println("tuple results" + selecta.getNextTuple());

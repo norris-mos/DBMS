@@ -7,12 +7,14 @@ public class Tuple {
     private String schema;
     private String tuple;
     private Object[] tupleobject;
+    private List<Term> termfield;
 
-    public Tuple(String tuple, String schema) {
+    public Tuple(String tuple, String schema, List<Term> termfield) {
 
         this.tuple = tuple;
         this.schema = schema;
         this.tupleobject = parseString(tuple, schema);
+        this.termfield = termfield;
 
     }
 
@@ -26,6 +28,10 @@ public class Tuple {
 
     public Object[] getItems() {
         return tupleobject;
+    }
+
+    public List<Term> getTermfield() {
+        return termfield;
     }
 
     public String[] getFields() {
