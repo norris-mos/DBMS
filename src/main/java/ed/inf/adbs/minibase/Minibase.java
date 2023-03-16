@@ -6,6 +6,7 @@ import ed.inf.adbs.minibase.base.Query;
 import ed.inf.adbs.minibase.base.RelationalAtom;
 import ed.inf.adbs.minibase.base.Term;
 import ed.inf.adbs.minibase.base.Tuple;
+import ed.inf.adbs.minibase.base.Variable;
 import ed.inf.adbs.minibase.base.Head;
 import ed.inf.adbs.minibase.parser.QueryParser;
 
@@ -41,6 +42,7 @@ public class Minibase {
     public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) throws IOException {
         // TODO: add your implementation
         Query query = QueryParser.parse(Paths.get(inputFile));
+
         String sql = QueryInterpreter.toSql((query));
         System.out.println(sql);
 
@@ -81,11 +83,13 @@ public class Minibase {
             // Query query = QueryParser.parse("Q(SUM(x * 2 * x)) :- R(x, 'z'), S(4, z, w),
             // 4 < 'test string' ");
 
-            // System.out.println("Entire query: " + query);
+            System.out.println("Entire query: " + query);
             // Head head = query.getHead();
             // System.out.println("Head: " + head);
 
             List<Atom> body = query.getBody();
+            Head head = query.getHead();
+            List<Variable> projectionlist = head.getVariables();
             System.out.println("Body: " + body);
 
             List<ComparisonAtom> catoms = query.getComparisonAtoms();
@@ -94,8 +98,9 @@ public class Minibase {
             System.out.println("ratoms: " + ratoms);
 
             ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
-            child1.open();
-            child1.dump(System.out);
+            ProjectionOperator p1 = new ProjectionOperator(child1, projectionlist);
+            p1.open();
+            p1.dump(System.out);
 
             // SelectionOperator selecta = new SelectionOperator(child1, catoms);
             // selecta.open();

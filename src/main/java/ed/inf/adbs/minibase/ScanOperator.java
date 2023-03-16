@@ -65,7 +65,7 @@ public class ScanOperator extends Operator {
 
                 String[] fields = currentLine.split(",");
                 if (index.isEmpty()) {
-                    System.out.println(terms);
+
                     return new Tuple(currentLine, RelationSchema, terms);
                 } else {
                     boolean check = true;
