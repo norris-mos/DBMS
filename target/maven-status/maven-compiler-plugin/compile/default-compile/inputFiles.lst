@@ -1,5 +1,6 @@
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Head.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/IntegerConstant.java
+/Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/ComparisonAtom.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/RelationalAtom.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/SelectionOperator.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/Minibase.java
@@ -31,4 +32,5 @@
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Variable.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/SumAggregate.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Constant.java
+/Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/JoinOperator.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/StringConstant.java

@@ -25,4 +25,19 @@ public abstract class Operator {
     public List<Attribute> getSchema() {
         return schema;
     }
+
+    public void reset() {
+        // The implementation of this method will depend on the specific subclass of
+        // Operator
+        // that is being used. However, a common approach is to close and then reopen
+        // the operator.
+        try {
+            close();
+            open();
+        } catch (Exception e) {
+            // Handle any exceptions that occur during the reset process
+            e.printStackTrace();
+        }
+    }
+
 }

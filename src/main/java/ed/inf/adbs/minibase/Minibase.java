@@ -94,13 +94,19 @@ public class Minibase {
 
             List<ComparisonAtom> catoms = query.getComparisonAtoms();
             List<RelationalAtom> ratoms = query.getRelationalAtoms();
+            List<ComparisonAtom> joinop = query.getJoinAtoms();
             System.out.println("catoms: " + catoms);
             System.out.println("ratoms: " + ratoms);
 
             ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
-            ProjectionOperator p1 = new ProjectionOperator(child1, projectionlist);
-            p1.open();
-            p1.dump(System.out);
+            ScanOperator child2 = new ScanOperator((RelationalAtom) body.get(1));
+            JoinOperator join1 = new JoinOperator(child1, child2, joinop);
+            join1.open();
+            join1.dump(System.out);
+
+            // ProjectionOperator p1 = new ProjectionOperator(child1, projectionlist);
+            // p1.open();
+            // p1.dump(System.out);
 
             // SelectionOperator selecta = new SelectionOperator(child1, catoms);
             // selecta.open();

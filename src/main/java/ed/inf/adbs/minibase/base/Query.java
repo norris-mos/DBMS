@@ -2,6 +2,7 @@ package ed.inf.adbs.minibase.base;
 
 import ed.inf.adbs.minibase.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,34 @@ public class Query {
                 .collect(Collectors.toList());
         return catoms;
 
+    }
+
+    public List<ComparisonAtom> getSelectionAtoms() {
+        List<ComparisonAtom> selectionAtoms = new ArrayList<>();
+        for (Atom atom : body) {
+            if (atom instanceof ComparisonAtom) {
+                ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
+                if (!(comparisonAtom.getTerm1() instanceof Variable)
+                        || !(comparisonAtom.getTerm2() instanceof Constant)) {
+                    selectionAtoms.add(comparisonAtom);
+                }
+            }
+        }
+        return selectionAtoms;
+    }
+
+    public List<ComparisonAtom> getJoinAtoms() {
+        List<ComparisonAtom> joinAtoms = new ArrayList<>();
+        for (Atom atom : body) {
+            if (atom instanceof ComparisonAtom) {
+                ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
+                if ((comparisonAtom.getTerm1() instanceof Variable)
+                        && (comparisonAtom.getTerm2() instanceof Variable)) {
+                    joinAtoms.add(comparisonAtom);
+                }
+            }
+        }
+        return joinAtoms;
     }
 
     public List<RelationalAtom> getRelationalAtoms() {
