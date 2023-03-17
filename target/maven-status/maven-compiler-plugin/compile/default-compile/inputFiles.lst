@@ -16,6 +16,7 @@
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/OperatorException.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/generated/MinibaseBaseVisitor.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/QueryParser.java
+/Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/JoinAtom.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/parser/generated/MinibaseBaseListener.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/QueryInterpreter.java
 /Users/maxoliverstapyltonnorris/Desktop/datsci/ADS/Minibase/src/main/java/ed/inf/adbs/minibase/base/Query.java

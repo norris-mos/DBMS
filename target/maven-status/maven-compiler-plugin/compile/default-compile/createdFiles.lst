@@ -41,6 +41,7 @@ ed/inf/adbs/minibase/base/Head.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$RelationalAtomContext.class
 ed/inf/adbs/minibase/parser/QueryParser.class
 ed/inf/adbs/minibase/parser/QueryParser$1.class
+ed/inf/adbs/minibase/base/JoinAtom.class
 ed/inf/adbs/minibase/parser/generated/MinibaseParser$VariableContext.class
 ed/inf/adbs/minibase/parser/QueryParser$TermVisitor.class
 ed/inf/adbs/minibase/base/Tuple.class

@@ -89,20 +89,30 @@ public class Minibase {
 
             List<Atom> body = query.getBody();
             Head head = query.getHead();
+            List<RelationalAtom> ratoms = query.getRelationalAtoms();
+            List<ComparisonAtom> catoms = query.getComparisonAtoms();
+            List<ComparisonAtom> joins = query.getJoins();
+            List<ComparisonAtom> selections = query.getSelections();
+
             List<Variable> projectionlist = head.getVariables();
             System.out.println("Body: " + body);
+            System.out.println("head: " + head);
+            System.out.println("relational atoms : " + ratoms);
+            System.out.println("comparison atoms: " + catoms);
+            System.out.println("joins: " + joins);
+            System.out.println("selections: " + selections);
 
-            List<ComparisonAtom> catoms = query.getComparisonAtoms();
-            List<RelationalAtom> ratoms = query.getRelationalAtoms();
-            List<ComparisonAtom> joinop = query.getJoinAtoms();
-            System.out.println("catoms: " + catoms);
-            System.out.println("ratoms: " + ratoms);
+            // List<ComparisonAtom> catoms = query.getComparisonAtoms();
+            // List<RelationalAtom> ratoms = query.getRelationalAtoms();
+            // List<ComparisonAtom> joinop = query.getJoinAtoms();
+            // System.out.println("catoms: " + catoms);
+            // System.out.println("ratoms: " + ratoms);
 
-            ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
-            ScanOperator child2 = new ScanOperator((RelationalAtom) body.get(1));
-            JoinOperator join1 = new JoinOperator(child1, child2, joinop);
-            join1.open();
-            join1.dump(System.out);
+            // ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
+            // ScanOperator child2 = new ScanOperator((RelationalAtom) body.get(1));
+            // JoinOperator join1 = new JoinOperator(child1, child2, joinop);
+            // join1.open();
+            // join1.dump(System.out);
 
             // ProjectionOperator p1 = new ProjectionOperator(child1, projectionlist);
             // p1.open();
