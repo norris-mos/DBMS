@@ -91,7 +91,9 @@ public class Query {
                     RelationalAtom leftRelationalAtom = varToRelationalAtom.get(leftVar);
                     RelationalAtom rightRelationalAtom = varToRelationalAtom.get(rightVar);
                     if (leftRelationalAtom != rightRelationalAtom) {
-                        joins.add(compAtom);
+                        JoinAtom explicitJoin = new JoinAtom(((Variable) leftTerm), leftRelationalAtom,
+                                ((Variable) rightTerm), rightRelationalAtom, compAtom.getOp());
+                        joins.add(explicitJoin);
                     } else {
                         selections.add(compAtom);
                     }
@@ -108,33 +110,35 @@ public class Query {
         }
     }
 
-    public List<ComparisonAtom> getEquiJoinConditions() {
-        List<ComparisonAtom> joinConditions = new ArrayList<>();
-        List<RelationalAtom> relations = new ArrayList<>();
-        for (Atom atom : body) {
-            if (atom instanceof RelationalAtom) {
-                relations.add(((RelationalAtom) atom));
-            }
-        }
-        for (RelationalAtom relation1 : relations) {
-            for (RelationalAtom relation2 : relations) {
-                if (relation1.getName() != relation2.getName()) {
-                    for (Term attribute1 : relation1.getTerms()) {
-                        for (Term attribute2 : relation2.getTerms()) {
-                            System.out
-                                    .println("just checking the term vs string issue:" + attribute1.equals(attribute2));
-                            if (attribute1.equals(attribute2)) {
+    // public List<ComparisonAtom> getEquiJoinConditions() {
+    // List<ComparisonAtom> joinConditions = new ArrayList<>();
+    // List<RelationalAtom> relations = new ArrayList<>();
+    // for (Atom atom : body) {
+    // if (atom instanceof RelationalAtom) {
+    // relations.add(((RelationalAtom) atom));
+    // }
+    // }
+    // for (RelationalAtom relation1 : relations) {
+    // for (RelationalAtom relation2 : relations) {
+    // if (relation1.getName() != relation2.getName()) {
+    // for (Term attribute1 : relation1.getTerms()) {
+    // for (Term attribute2 : relation2.getTerms()) {
+    // System.out
+    // .println("just checking the term vs string issue:" +
+    // attribute1.equals(attribute2));
+    // if (attribute1.equals(attribute2)) {
 
-                                joinConditions.add(new ComparisonAtom(attribute1, attribute2, ComparisonOperator.EQ));
+    // joinConditions.add(new ComparisonAtom(attribute1, attribute2,
+    // ComparisonOperator.EQ));
 
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return joinConditions;
-    }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // return joinConditions;
+    // }
 
     @Override
     public String toString() {

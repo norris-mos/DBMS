@@ -13,6 +13,7 @@ public class SelectionOperator extends Operator {
 
     public SelectionOperator(Operator child, List<ComparisonAtom> ComparisonAtoms) {
         this.child = child;
+
         this.ComparisonAtoms = ComparisonAtoms;
         // these are the variables in the query of relation being handled
         this.childschema = ((ScanOperator) child).getChildTerms();
@@ -30,6 +31,12 @@ public class SelectionOperator extends Operator {
 
             boolean match = true;
             String[] fields = tuple.getFields();
+            // System.out.println(((ScanOperator) child).getRelationName());
+            // for (String field : fields) {
+            // System.out.println(field);
+            // }
+
+            // System.out.println(childschema.toString());
 
             for (ComparisonAtom ComparisonAtom : ComparisonAtoms) {
                 Term comparisonVar = ComparisonAtom.getTerm1();

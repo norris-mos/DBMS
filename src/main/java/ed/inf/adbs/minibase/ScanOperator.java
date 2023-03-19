@@ -44,6 +44,10 @@ public class ScanOperator extends Operator {
         return terms;
     }
 
+    public String getRelationName() {
+        return RelationName;
+    }
+
     @Override
     public void open() throws Exception {
         try {

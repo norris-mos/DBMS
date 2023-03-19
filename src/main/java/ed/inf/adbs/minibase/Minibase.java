@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class Minibase {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
         if (args.length != 3) {
             System.err.println("Usage: Minibase database_dir input_file output_file");
@@ -35,16 +35,22 @@ public class Minibase {
 
         // evaluateCQ(databaseDir, inputFile, outputFile);
 
-        parsingExample(inputFile);
+        evaluateCQ(databaseDir, inputFile, outputFile);
 
     }
 
-    public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) throws IOException {
+    public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) throws Exception {
         // TODO: add your implementation
         Query query = QueryParser.parse(Paths.get(inputFile));
-
-        String sql = QueryInterpreter.toSql((query));
-        System.out.println(sql);
+        QueryInterpreter plan = new QueryInterpreter();
+        plan.QueryPlan(query);
+        List<Operator> ops = plan.getOperators();
+        for (Operator op : ops) {
+            System.out.println(op);
+        }
+        Operator projectionOp = ops.get(ops.size() - 1);
+        projectionOp.open();
+        projectionOp.dump(System.out);
 
     }
 

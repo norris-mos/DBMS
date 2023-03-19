@@ -24,6 +24,10 @@ public class JoinOperator extends Operator {
         this.rightTuples = new ArrayList<>();
     }
 
+    public String getJoinAtom() {
+        return joinAtom.get(0).toString();
+    }
+
     @Override
     public void open() throws Exception {
         leftInput.open();
@@ -79,8 +83,9 @@ public class JoinOperator extends Operator {
         int rightIndex = variableTerms.indexOf(attribute2);
         String value1 = joinedTuple.getFields()[leftIndex].trim();
         String value2 = joinedTuple.getFields()[rightIndex].trim();
-        System.out.println("value1: " + value1 + " Value2: " + value2);
-        System.out.println("comparison check " + compareValues(value1, joinCondition.getOpString(), value2));
+        // System.out.println("value1: " + value1 + " Value2: " + value2);
+        // System.out.println("comparison check " + compareValues(value1,
+        // joinCondition.getOpString(), value2));
 
         return compareValues(value1, joinCondition.getOpString(), value2);
 

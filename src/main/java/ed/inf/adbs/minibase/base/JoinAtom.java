@@ -1,5 +1,8 @@
 package ed.inf.adbs.minibase.base;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JoinAtom extends ComparisonAtom {
 
     private RelationalAtom relation1;
@@ -17,6 +20,14 @@ public class JoinAtom extends ComparisonAtom {
 
     public RelationalAtom getRelation2() {
         return relation2;
+    }
+
+    public List<RelationalAtom> getRelations() {
+        List<RelationalAtom> rels = new ArrayList<>();
+        rels.add(relation1);
+        rels.add(relation2);
+
+        return rels;
     }
 
     @Override
