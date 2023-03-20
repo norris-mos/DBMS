@@ -33,9 +33,9 @@ public class Minibase {
         String inputFile = args[1];
         String outputFile = args[2];
 
-        // evaluateCQ(databaseDir, inputFile, outputFile);
+        evaluateCQ(databaseDir, inputFile, outputFile);
 
-        parsingExample(inputFile);
+        // parsingExample(inputFile);
 
     }
 

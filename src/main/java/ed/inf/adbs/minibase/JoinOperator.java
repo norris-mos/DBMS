@@ -104,7 +104,7 @@ public class JoinOperator extends Operator {
         String value1 = joinedTuple.getFields()[leftIndex].trim();
         String value2 = joinedTuple.getFields()[rightIndex].trim();
         // System.out.println(variableTerms);
-        System.out.println(value1 + "=" + value2);
+        // System.out.println(value1 + "=" + value2);
         // System.out.println(leftIndex + "=" + rightIndex);
         // System.out.println("value1: " + value1 + " Value2: " + value2);
         // System.out.println("comparison check " + compareValues(value1,
