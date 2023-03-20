@@ -35,7 +35,7 @@ public class Minibase {
 
         // evaluateCQ(databaseDir, inputFile, outputFile);
 
-        evaluateCQ(databaseDir, inputFile, outputFile);
+        parsingExample(inputFile);
 
     }
 
@@ -98,15 +98,18 @@ public class Minibase {
             List<RelationalAtom> ratoms = query.getRelationalAtoms();
             List<ComparisonAtom> catoms = query.getComparisonAtoms();
             List<ComparisonAtom> joins = query.getJoins();
+            ComparisonAtom join = joins.get(0);
             List<ComparisonAtom> selections = query.getSelections();
 
             List<Variable> projectionlist = head.getVariables();
             System.out.println("Body: " + body);
             System.out.println("head: " + head);
-            System.out.println("relational atoms : " + ratoms);
-            System.out.println("comparison atoms: " + catoms);
-            System.out.println("joins: " + joins);
-            System.out.println("selections: " + selections);
+            System.out.println("sum agg: " + head.getSumAggregate().getProductTerms());
+
+            // System.out.println("relational atoms : " + ratoms);
+            // System.out.println("comparison atoms: " + catoms);
+            // System.out.println("joins: " + joins);
+            // System.out.println("selections: " + selections);
 
             // List<ComparisonAtom> catoms = query.getComparisonAtoms();
             // List<RelationalAtom> ratoms = query.getRelationalAtoms();
@@ -114,11 +117,11 @@ public class Minibase {
             // System.out.println("catoms: " + catoms);
             // System.out.println("ratoms: " + ratoms);
 
-            // ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
-            // ScanOperator child2 = new ScanOperator((RelationalAtom) body.get(1));
-            // JoinOperator join1 = new JoinOperator(child1, child2, joinop);
-            // join1.open();
-            // join1.dump(System.out);
+            ScanOperator child1 = new ScanOperator((RelationalAtom) body.get(0));
+            ScanOperator child2 = new ScanOperator((RelationalAtom) body.get(1));
+            JoinOperator join1 = new JoinOperator(child1, child2, joins);
+            join1.open();
+            join1.dump(System.out);
 
             // ProjectionOperator p1 = new ProjectionOperator(child1, projectionlist);
             // p1.open();

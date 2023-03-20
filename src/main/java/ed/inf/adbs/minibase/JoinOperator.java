@@ -2,6 +2,7 @@ package ed.inf.adbs.minibase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import ed.inf.adbs.minibase.base.OperatorException;
 import ed.inf.adbs.minibase.base.Term;
@@ -50,8 +51,10 @@ public class JoinOperator extends Operator {
                 // System.out.println(joinedTuple.getName());
                 boolean satisfiesJoinConditions = true;
                 for (ComparisonAtom atom : joinAtom) {
+                    // System.out.println(atom);
+                    // System.out.println(evaluateJoin(joinedTuple, atom));
                     if (!evaluateJoin(joinedTuple, atom)) {
-
+                        // System.out.println("Doesnt satisfy");
                         satisfiesJoinConditions = false;
                         // System.out.println(joinedTuple.getName());
                         // System.out.println(satisfiesJoinConditions);
@@ -79,10 +82,30 @@ public class JoinOperator extends Operator {
         Term attribute1 = joinCondition.getTerm1();
         Term attribute2 = joinCondition.getTerm2();
         List<Term> variableTerms = joinedTuple.getTermfield();
-        int leftIndex = variableTerms.indexOf(attribute1);
-        int rightIndex = variableTerms.indexOf(attribute2);
+        List<Integer> indexes = new ArrayList<>();
+        int leftIndex;
+        int rightIndex;
+        if (attribute1.equals(attribute2)) {
+            IntStream.range(0, variableTerms.size())
+                    .filter(i -> variableTerms.get(i).equals(attribute1))
+                    .forEach(indexes::add);
+            // System.out.println(indexes.get(0));
+            // System.out.println(indexes.get(1));
+
+            leftIndex = indexes.get(0);
+            rightIndex = indexes.get(1);
+        } else {
+
+            leftIndex = variableTerms.indexOf(attribute1);
+            rightIndex = variableTerms.indexOf(attribute2);
+
+        }
+
         String value1 = joinedTuple.getFields()[leftIndex].trim();
         String value2 = joinedTuple.getFields()[rightIndex].trim();
+        // System.out.println(variableTerms);
+        System.out.println(value1 + "=" + value2);
+        // System.out.println(leftIndex + "=" + rightIndex);
         // System.out.println("value1: " + value1 + " Value2: " + value2);
         // System.out.println("comparison check " + compareValues(value1,
         // joinCondition.getOpString(), value2));

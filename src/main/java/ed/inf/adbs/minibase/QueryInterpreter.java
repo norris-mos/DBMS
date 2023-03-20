@@ -10,6 +10,7 @@ import ed.inf.adbs.minibase.base.ComparisonAtom;
 import ed.inf.adbs.minibase.base.JoinAtom;
 import ed.inf.adbs.minibase.base.Query;
 import ed.inf.adbs.minibase.base.RelationalAtom;
+import ed.inf.adbs.minibase.base.SumAggregate;
 import ed.inf.adbs.minibase.base.Term;
 import ed.inf.adbs.minibase.base.Variable;
 import ed.inf.adbs.minibase.base.Head;
@@ -123,12 +124,28 @@ public class QueryInterpreter {
         }
 
         Head head = query.getHead();
-        List<Variable> finalProjection = head.getVariables();
-        Operator finalOperator = operators.get(operators.size() - 1);
 
-        Operator finalProjections = new ProjectionOperator(finalOperator, finalProjection);
-        System.out.println("PROJECTION " + finalProjection);
-        operators.add(finalProjections);
+        Operator finalOperator = operators.get(operators.size() - 1);
+        List<Variable> finalProjection = head.getVariables();
+        if (head.getSumAggregate() == null) {
+
+            Operator finalProjections = new ProjectionOperator(finalOperator, finalProjection);
+            System.out.println("PROJECTION " + finalProjection);
+            operators.add(finalProjections);
+
+        } else {
+            SumAggregate agg = head.getSumAggregate();
+            List<Term> gbyterms = new ArrayList<>();
+            for (Variable v : finalProjection) {
+                gbyterms.add((Term) v);
+
+            }
+
+            SumOperator sumOperator = new SumOperator(finalOperator, gbyterms, agg);
+            System.out.println("SUM OPERATOR " + finalProjection);
+            operators.add(sumOperator);
+
+        }
 
         // // Create a SelectionOperator for each selection condition in the query
         // for (ComparisonAtom select : selections) {
