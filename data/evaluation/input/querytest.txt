@@ -1,1 +1,1 @@
-Q(SUM(b * b)) :- R(1,b), S(b,c), T(d,c,e), d<5, e!=0
+Q(y, x) :- R(x, y, z), S(x, w, t), T(v, r), x = 1

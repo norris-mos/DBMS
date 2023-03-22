@@ -8,6 +8,7 @@ import ed.inf.adbs.minibase.base.OperatorException;
 import ed.inf.adbs.minibase.base.Term;
 import ed.inf.adbs.minibase.base.Tuple;
 import ed.inf.adbs.minibase.base.ComparisonAtom;
+import ed.inf.adbs.minibase.base.ComparisonOperator;
 
 public class JoinOperator extends Operator {
 
@@ -79,39 +80,43 @@ public class JoinOperator extends Operator {
     }
 
     public static boolean evaluateJoin(Tuple joinedTuple, ComparisonAtom joinCondition) {
-        Term attribute1 = joinCondition.getTerm1();
-        Term attribute2 = joinCondition.getTerm2();
-        List<Term> variableTerms = joinedTuple.getTermfield();
-        List<Integer> indexes = new ArrayList<>();
-        int leftIndex;
-        int rightIndex;
-        if (attribute1.equals(attribute2)) {
-            IntStream.range(0, variableTerms.size())
-                    .filter(i -> variableTerms.get(i).equals(attribute1))
-                    .forEach(indexes::add);
-            // System.out.println(indexes.get(0));
-            // System.out.println(indexes.get(1));
-
-            leftIndex = indexes.get(0);
-            rightIndex = indexes.get(1);
+        if (joinCondition.getOp().equals(ComparisonOperator.XR)) {
+            return true;
         } else {
+            Term attribute1 = joinCondition.getTerm1();
+            Term attribute2 = joinCondition.getTerm2();
+            List<Term> variableTerms = joinedTuple.getTermfield();
+            List<Integer> indexes = new ArrayList<>();
+            int leftIndex;
+            int rightIndex;
+            if (attribute1.equals(attribute2)) {
+                IntStream.range(0, variableTerms.size())
+                        .filter(i -> variableTerms.get(i).equals(attribute1))
+                        .forEach(indexes::add);
+                // System.out.println(indexes.get(0));
+                // System.out.println(indexes.get(1));
 
-            leftIndex = variableTerms.indexOf(attribute1);
-            rightIndex = variableTerms.indexOf(attribute2);
+                leftIndex = indexes.get(0);
+                rightIndex = indexes.get(1);
+            } else {
+
+                leftIndex = variableTerms.indexOf(attribute1);
+                rightIndex = variableTerms.indexOf(attribute2);
+
+            }
+
+            String value1 = joinedTuple.getFields()[leftIndex].trim();
+            String value2 = joinedTuple.getFields()[rightIndex].trim();
+            // System.out.println(variableTerms);
+            // System.out.println(value1 + "=" + value2);
+            // System.out.println(leftIndex + "=" + rightIndex);
+            // System.out.println("value1: " + value1 + " Value2: " + value2);
+            // System.out.println("comparison check " + compareValues(value1,
+            // joinCondition.getOpString(), value2));
+
+            return compareValues(value1, joinCondition.getOpString(), value2);
 
         }
-
-        String value1 = joinedTuple.getFields()[leftIndex].trim();
-        String value2 = joinedTuple.getFields()[rightIndex].trim();
-        // System.out.println(variableTerms);
-        // System.out.println(value1 + "=" + value2);
-        // System.out.println(leftIndex + "=" + rightIndex);
-        // System.out.println("value1: " + value1 + " Value2: " + value2);
-        // System.out.println("comparison check " + compareValues(value1,
-        // joinCondition.getOpString(), value2));
-
-        return compareValues(value1, joinCondition.getOpString(), value2);
-
     }
 
     public static boolean compareValues(String value1, String comparisonOperator, String value2) {
@@ -129,6 +134,8 @@ public class JoinOperator extends Operator {
                 return Double.parseDouble(value1) >= Double.parseDouble(value2);
             case "<=":
                 return Double.parseDouble(value1) <= Double.parseDouble(value2);
+            case "X":
+                return true;
             default:
                 // handle the default case by returning false
                 return false;

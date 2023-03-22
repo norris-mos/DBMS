@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import ed.inf.adbs.minibase.base.ComparisonAtom;
+import ed.inf.adbs.minibase.base.ComparisonOperator;
 import ed.inf.adbs.minibase.base.JoinAtom;
 import ed.inf.adbs.minibase.base.Query;
 import ed.inf.adbs.minibase.base.RelationalAtom;
@@ -116,11 +117,67 @@ public class QueryInterpreter {
 
                         System.out.println("JOIN " + new_name[0] + "&" + new_name[2] + "= " +
                                 old_name[2]);
+                        usedRelations.add(used.getName());
+                        // fix the cross product issue by checking that all used relations
+                        // account for or scans elese take cross product with last join operator.
 
                     }
 
                 }
             }
+            System.out.print("used" + usedRelations);
+            for (String relations : scans.keySet()) {
+                if (!usedRelations.contains(relations)) {
+                    Operator unjoined = scans.get(relations);
+                    Operator lastJoin = joinOperators.get(joinOperators.size() - 1);
+                    Term r1 = new Term();
+                    Term r2 = new Term();
+                    List<ComparisonAtom> crosspAtom = new ArrayList<>();
+                    crosspAtom.add(new ComparisonAtom(r1, r2, ComparisonOperator.XR));
+                    Operator jCrossNew = new JoinOperator(lastJoin, unjoined, crosspAtom);
+                    operators.add(jCrossNew);
+                    joinOperators.add((JoinOperator) jCrossNew);
+                    usedRelations.add(relations);
+                    System.out.println("ADDED CROSS PRODUCT");
+
+                }
+
+            }
+        } else {
+
+            List<String> scanName = new ArrayList<>();
+            List<String> usedScanName = new ArrayList<>();
+            for (RelationalAtom rel : query.getRelationalAtoms()) {
+                scanName.add(rel.getName());
+
+            }
+            Operator child1 = scans.get(scanName.get(0));
+            Operator child2 = scans.get(scanName.get(1));
+            usedScanName.add(scanName.get(0));
+            usedScanName.add(scanName.get(1));
+            Term r1 = new Term();
+            Term r2 = new Term();
+            List<ComparisonAtom> crosspAtom = new ArrayList<>();
+            crosspAtom.add(new ComparisonAtom(r1, r2, ComparisonOperator.XR));
+            Operator crossJoin = new JoinOperator(child1, child2, crosspAtom);
+            operators.add(crossJoin);
+            joinOperators.add((JoinOperator) crossJoin);
+
+            for (String relations : scans.keySet()) {
+                if (!usedScanName.contains(relations)) {
+                    Operator unjoined = scans.get(relations);
+                    Operator lastJoin = joinOperators.get(joinOperators.size() - 1);
+                    crosspAtom.add(new ComparisonAtom(r1, r2, ComparisonOperator.XR));
+                    Operator jCrossNew = new JoinOperator(lastJoin, unjoined, crosspAtom);
+                    operators.add(jCrossNew);
+                    joinOperators.add((JoinOperator) jCrossNew);
+                    usedScanName.add(relations);
+                    System.out.println("ADDED CROSS PRODUCT");
+
+                }
+
+            }
+
         }
 
         Head head = query.getHead();

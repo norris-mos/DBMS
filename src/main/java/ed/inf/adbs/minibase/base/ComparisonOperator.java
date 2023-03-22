@@ -9,7 +9,8 @@ public enum ComparisonOperator {
     GT(">"),
     GEQ(">="),
     LT("<"),
-    LEQ("<=");
+    LEQ("<="),
+    XR("x");
 
     private final String text;
 

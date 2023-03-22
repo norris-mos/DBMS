@@ -19,6 +19,7 @@ public class ScanOperator extends Operator {
     private BufferedReader reader;
     private String currentLine;
     private List<Term> terms;
+    private Integer intermediate;
 
     private List<Integer> index;
 
@@ -60,8 +61,11 @@ public class ScanOperator extends Operator {
 
     @Override
     public Tuple getNextTuple() throws Exception {
+        int intermediate = 0;
         try {
+
             while (true) {
+                intermediate++;
                 currentLine = reader.readLine();
                 if (currentLine == null) {
                     return null;
@@ -87,10 +91,12 @@ public class ScanOperator extends Operator {
                     }
                 }
             }
+
         } catch (IOException e) {
             throw new OperatorException(
                     "Could not read from data source: " + DataCatalog.getInstance().getFilePath(RelationName));
         }
+
     }
 
     @Override

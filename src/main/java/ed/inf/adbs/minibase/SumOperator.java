@@ -102,7 +102,8 @@ public class SumOperator extends Operator {
                         System.out.println(tup);
                         aggtotal++;
                     }
-                    results.put("Fix", aggtotal);
+                    String aggtermint = aggterms.get(0).toString();
+                    results.put("Fix", Integer.parseInt(aggtermint) * aggtotal);
 
                 } else {
                     for (Tuple tup : tuples) {
