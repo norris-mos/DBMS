@@ -18,12 +18,15 @@ public class JoinOperator extends Operator {
     private Tuple currentLeftTuple;
     private List<Tuple> rightTuples;
     private int currentRightTupleIndex;
+    private int tupleCount;
 
-    public JoinOperator(Operator leftInput, Operator rightInput, List<ComparisonAtom> joinAtom) {
+    public JoinOperator(Operator leftInput, Operator rightInput,
+            List<ComparisonAtom> joinAtom) {
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.joinAtom = joinAtom;
         this.rightTuples = new ArrayList<>();
+        this.tupleCount = 0;
     }
 
     public String getJoinAtom() {
@@ -55,6 +58,7 @@ public class JoinOperator extends Operator {
                     // System.out.println(atom);
                     // System.out.println(evaluateJoin(joinedTuple, atom));
                     if (!evaluateJoin(joinedTuple, atom)) {
+
                         // System.out.println("Doesnt satisfy");
                         satisfiesJoinConditions = false;
                         // System.out.println(joinedTuple.getName());
@@ -66,6 +70,7 @@ public class JoinOperator extends Operator {
                     // System.out.println(satisfiesJoinConditions);
                     result = joinedTuple;
                     currentRightTupleIndex++;
+                    tupleCount++;
                     // System.out.println(result);
                     return result;
                 } else {
@@ -76,6 +81,8 @@ public class JoinOperator extends Operator {
             currentRightTupleIndex = 0;
             loadRightTuples();
         }
+
+        System.out.println("intermediate joins = " + tupleCount);
         return result;
     }
 
@@ -119,7 +126,8 @@ public class JoinOperator extends Operator {
         }
     }
 
-    public static boolean compareValues(String value1, String comparisonOperator, String value2) {
+    public static boolean compareValues(String value1, String comparisonOperator,
+            String value2) {
         switch (comparisonOperator) {
             case "=":
 
